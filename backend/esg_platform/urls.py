@@ -2,7 +2,7 @@
 URL configuration for esg_platform project.
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
@@ -23,8 +23,11 @@ urlpatterns = [
     path('api/dashboard/', include('apps.dashboard.urls')),
     path('api/users/', include('apps.user_management.urls')),
     
-    # Serve frontend files (for development)
+    # Serve frontend files - React app
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    
+    # Catch-all to serve the React app for all other URLs (client-side routing)
+    re_path(r'^.*', TemplateView.as_view(template_name='index.html')),
 ]
 
 # Serve media files in development
