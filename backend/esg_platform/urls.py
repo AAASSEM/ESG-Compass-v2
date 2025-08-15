@@ -27,7 +27,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
     
     # Catch-all to serve the React app for all other URLs (client-side routing)
-    re_path(r'^.*', TemplateView.as_view(template_name='index.html')),
+    # BUT exclude API and static asset paths
+    re_path(r'^(?!api/|admin/|assets/).*', TemplateView.as_view(template_name='index.html')),
 ]
 
 # Serve media files in development
