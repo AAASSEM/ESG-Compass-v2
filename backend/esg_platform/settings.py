@@ -72,7 +72,10 @@ ROOT_URLCONF = 'esg_platform.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR.parent / 'frontend-react' / 'dist',  # React build directory
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,7 +125,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+    BASE_DIR.parent / 'frontend-react' / 'dist' / 'assets',  # React build assets
+]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files
