@@ -1,5 +1,5 @@
 """
-Django settings for esg_platform project.
+Django settings for esg_platform project - FIXED PATHS
 """
 
 import os
@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)  # Set to False for production
 
 # ALLOWED_HOSTS configuration for production deployment
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver').split(',')
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # Re-enabled with proper CSRF_TRUSTED_ORIGINS
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -70,12 +70,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'esg_platform.urls'
 
+# FIXED: Correct path to React build directory
+REACT_BUILD_DIR = os.path.join(BASE_DIR.parent, 'frontend-react', 'dist')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'templates',
-            os.path.join(BASE_DIR, '..', 'frontend-react', 'dist'),  # React build directory (corrected path)
+            REACT_BUILD_DIR,  # React build directory with index.html
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -125,21 +128,30 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images) - WhiteNoise Configuration
-STATIC_URL = '/assets/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# This tells Django to also look for static files in your React build folder
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Django static files
-    os.path.join(BASE_DIR, '..', 'frontend-react', 'dist', 'assets'),  # React build assets (corrected path)
-]
+# FIXED: Correct paths for static files
+STATICFILES_DIRS = []
+if os.path.exists(os.path.join(BASE_DIR, 'static')):
+    STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'static'))
+
+# Add React assets directory if it exists
+REACT_ASSETS_DIR = os.path.join(REACT_BUILD_DIR, 'assets')
+if os.path.exists(REACT_ASSETS_DIR):
+    STATICFILES_DIRS.append(REACT_ASSETS_DIR)
+    
+# Also check for the entire dist directory for any static files
+if os.path.exists(REACT_BUILD_DIR):
+    STATICFILES_DIRS.append(REACT_BUILD_DIR)
 
 # WhiteNoise storage configuration for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # WhiteNoise configuration for better static file handling
 WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True
+WHITENOISE_AUTOREFRESH = DEBUG  # Only autorefresh in debug mode
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['map']  # Skip source maps
 
 # Media files
 MEDIA_URL = '/media/'
@@ -153,18 +165,20 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:8000', 
     'http://localhost:3000',
-    'http://localhost:3001',  # Added for new backend port
+    'http://localhost:3001',
+    'http://localhost:5173',
     'http://127.0.0.1:8080',
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001',  # Added for new backend port
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:5173',
     'https://esg-compass-v2.onrender.com',  # Production Render URL
 ]
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000,http://localhost:8080,http://127.0.0.1:8080,http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,https://esg-compass-v2.onrender.com').split(',')
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all origins in development
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all origins in development only
 CORS_ALLOWED_HEADERS = [
     'accept',
     'accept-encoding',
