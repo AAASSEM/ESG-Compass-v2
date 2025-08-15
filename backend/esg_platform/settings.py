@@ -58,6 +58,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise for static files
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,13 +124,17 @@ TIME_ZONE = 'Asia/Dubai'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+# Static files (CSS, JavaScript, Images) - WhiteNoise Configuration
+STATIC_URL = '/assets/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# This tells Django to also look for static files in your React build folder
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    BASE_DIR.parent / 'frontend-react' / 'dist' / 'assets',  # React build assets
+    os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist', 'assets'),
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise storage configuration for production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
