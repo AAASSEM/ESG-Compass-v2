@@ -127,19 +127,19 @@ USE_TZ = True
 # -----------------
 # Static Files Configuration
 # -----------------
-# The URL to use when referring to static files
-STATIC_URL = '/assets/'
+# Set STATIC_URL to match the root of your application.
+STATIC_URL = '/'
 
 # This is where Django's `collectstatic` command will collect all static files.
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# We will point it directly to your frontend build folder.
+STATIC_ROOT = os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist')
 
-# CORRECTED: Tell Django to look for static files in the `dist` folder.
-# The 'assets' directory is inside it, so you do not need to specify it here.
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist'),
-]
+# Since all your static files are in the STATIC_ROOT, you don't need a `STATICFILES_DIRS`.
+# You can remove or comment out this setting.
+# STATICFILES_DIRS = [...]
 
-# This will serve files from your STATIC_ROOT
+# This tells `collectstatic` to use the `STATICFILES_STORAGE` for its operations
+# and WhiteNoise will then serve from STATIC_ROOT.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
