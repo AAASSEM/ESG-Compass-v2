@@ -74,8 +74,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',
-            os.path.join(BASE_DIR, '..', 'frontend-react', 'dist'),  # React build directory (corrected path)
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -125,26 +125,21 @@ USE_I18N = True
 USE_TZ = True
 
 # -----------------
-# Static Files Configuration
+# Static Files & Media Configuration
 # -----------------
-# Set STATIC_URL to match the root of your application.
-STATIC_URL = '/'
-
-# This is where Django's `collectstatic` command will collect all static files.
-# We will point it directly to your frontend build folder.
-STATIC_ROOT = os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist')
-
-# Since all your static files are in the STATIC_ROOT, you don't need a `STATICFILES_DIRS`.
-# You can remove or comment out this setting.
-# STATICFILES_DIRS = [...]
-
-# This tells `collectstatic` to use the `STATICFILES_STORAGE` for its operations
-# and WhiteNoise will then serve from STATIC_ROOT.
+# This URL must match the prefix of your Vite assets, e.g., `/assets/`
+STATIC_URL = '/assets/'
+# This should be a separate directory for collected static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# This tells Django to look for static files in the `dist` folder
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist'),
+]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
+# Your media files (user-uploaded) must have a different URL
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
