@@ -4,17 +4,9 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/', // This is crucial for production builds
+  base: '/', // Make sure this is set to '/'
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: false,
-    // This ensures that the index.html references assets correctly
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      }
-    }
+    outDir: 'dist', // Ensure this is `dist`
   },
   server: {
     port: 8080,
