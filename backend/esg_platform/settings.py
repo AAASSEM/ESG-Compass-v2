@@ -75,7 +75,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'templates',
-            BASE_DIR.parent / 'frontend-react' / 'dist',  # React build directory
+            os.path.join(BASE_DIR, '..', 'frontend-react', 'dist'),  # React build directory (corrected path)
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -131,11 +131,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # This tells Django to also look for static files in your React build folder
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Django static files
-    os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist', 'assets'),  # React build assets
+    os.path.join(BASE_DIR, '..', 'frontend-react', 'dist', 'assets'),  # React build assets (corrected path)
 ]
 
 # WhiteNoise storage configuration for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# WhiteNoise configuration for better static file handling
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
 
 # Media files
 MEDIA_URL = '/media/'
