@@ -130,7 +130,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # This tells Django to also look for static files in your React build folder
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist', 'assets'),
+    os.path.join(BASE_DIR, 'static'),  # Django static files
+    os.path.join(BASE_DIR, '..', '..', 'frontend-react', 'dist', 'assets'),  # React build assets
 ]
 
 # WhiteNoise storage configuration for production
